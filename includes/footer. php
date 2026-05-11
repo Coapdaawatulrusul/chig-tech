@@ -1,0 +1,6 @@
+</div>
+<footer>
+    <p>&copy; <?= date('Y') ?> CHIG TECH. All rights reserved.</p>
+</footer>
+</body>
+</html>
