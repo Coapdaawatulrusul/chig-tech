@@ -1,0 +1,29 @@
+<?php
+include '../includes/config.php';
+include '../includes/functions.php';
+include '../includes/header.php';
+?>
+<h2>Our Services</h2>
+<div class="product-grid">
+    <?php
+    $res = $conn->query("SELECT * FROM products WHERE type='service' ORDER BY created_at DESC");
+    while ($s = $res->fetch_assoc()):
+    ?>
+    <div class="card">
+        <img src="<?= htmlspecialchars($s['image']) ?: 'https://via.placeholder.com/250x150' ?>" alt="">
+        <h4><?= htmlspecialchars($s['name']) ?></h4>
+        <p><?= htmlspecialchars($s['description']) ?></p>
+        <p><strong>$<?= number_format($s['price'],2) ?></strong></p>
+        <?php if (isLoggedIn()): ?>
+            <form method="post" action="product_detail.php?id=<?= $s['id'] ?>">
+                <input type="hidden" name="add_to_cart" value="1">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn">Add to Cart</button>
+            </form>
+        <?php else: ?>
+            <a href="login.php" class="btn">Login to Buy</a>
+        <?php endif; ?>
+    </div>
+    <?php endwhile; ?>
+</div>
+<?php include '../includes/footer.php'; ?>
