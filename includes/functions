@@ -1,4 +1,4 @@
-<?php.
+<?php
 function isLoggedIn() { return isset($_SESSION['user_id']); }
 function isAdmin() { return isLoggedIn() && $_SESSION['role'] == 'admin'; }
 function isApproved() { return isLoggedIn() && $_SESSION['is_approved'] == 1; }
