@@ -1,0 +1,33 @@
+<?php
+include '../includes/config.php';
+include '../includes/functions.php';
+if (isLoggedIn()) { header('Location: marketplace.php'); exit; }
+$msg = '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email']; $name = $_POST['name'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $city = $_POST['city'];
+    $check = $conn->prepare("SELECT id FROM users WHERE email=?");
+    $check->bind_param("s", $email);
+    $check->execute();
+    if ($check->get_result()->num_rows > 0) {
+        $msg = "<span class='error'>Email already registered.</span>";
+    } else {
+        $stmt = $conn->prepare("INSERT INTO users (name, email, password, city) VALUES (?,?,?,?)");
+        $stmt->bind_param("ssss", $name, $email, $password, $city);
+        $stmt->execute();
+        $msg = "<span class='success'>Registration successful! Awaiting admin approval.</span>";
+    }
+}
+include '../includes/header.php';
+?>
+<h2>Register</h2>
+<?= $msg ?>
+<form method="post">
+    Name: <input type="text" name="name" required>
+    Email: <input type="email" name="email" required>
+    Password: <input type="password" name="password" required>
+    City: <input type="text" name="city">
+    <button type="submit" class="btn">Register</button>
+</form>
+<?php include '../includes/footer.php'; ?>
