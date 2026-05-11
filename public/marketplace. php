@@ -1,0 +1,22 @@
+<?php
+include '../includes/config.php';
+include '../includes/functions.php';
+include '../includes/header.php';
+?>
+<h2>Marketplace</h2>
+<div class="product-grid">
+    <?php
+    $res = $conn->query("SELECT p.*, c.name as cat_name FROM products p LEFT JOIN categories c ON p.category_id=c.id WHERE p.type='product' ORDER BY p.created_at DESC");
+    while ($p = $res->fetch_assoc()):
+    ?>
+    <div class="card">
+        <img src="<?= htmlspecialchars($p['image']) ?: 'https://via.placeholder.com/250x150' ?>" alt="">
+        <h4><?= htmlspecialchars($p['name']) ?></h4>
+        <p>Category: <?= htmlspecialchars($p['cat_name']) ?></p>
+        <p>Condition: <?= htmlspecialchars($p['condition']) ?></p>
+        <p><strong>$<?= number_format($p['price'],2) ?></strong></p>
+        <a href="product_detail.php?id=<?= $p['id'] ?>" class="btn">Details</a>
+    </div>
+    <?php endwhile; ?>
+</div>
+<?php include '../includes/footer.php'; ?>
