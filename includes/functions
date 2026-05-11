@@ -1,8 +1,0 @@
-<?php
-function isLoggedIn() { return isset($_SESSION['user_id']); }
-function isAdmin() { return isLoggedIn() && $_SESSION['role'] == 'admin'; }
-function isApproved() { return isLoggedIn() && $_SESSION['is_approved'] == 1; }
-function requireLogin() { if (!isLoggedIn()) { header('Location: ../public/login.php'); exit; } }
-function requireApproved() { requireLogin(); if (!isApproved()) { echo '<p>Account pending approval.</p>'; exit; } }
-function requireAdmin() { requireLogin(); if (!isAdmin()) { header('Location: ../index.php'); exit; } }
-?>
