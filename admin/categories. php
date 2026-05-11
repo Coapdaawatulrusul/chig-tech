@@ -1,0 +1,26 @@
+<?php
+include '../includes/config.php';
+include '../includes/functions.php';
+requireAdmin();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = $_POST['name'];
+    $slug = strtolower(str_replace(' ', '-', $name));
+    $stmt = $conn->prepare("INSERT INTO categories (name, slug) VALUES (?,?)");
+    $stmt->bind_param("ss", $name, $slug);
+    $stmt->execute();
+    header('Location: categories.php'); exit;
+}
+$cats = $conn->query("SELECT * FROM categories");
+include '../includes/header.php';
+?>
+<h2>Categories</h2>
+<form method="post">
+    New Category: <input type="text" name="name" required>
+    <button type="submit" class="btn">Add</button>
+</form>
+<ul>
+    <?php while ($c = $cats->fetch_assoc()): ?>
+        <li><?= htmlspecialchars($c['name']) ?> (<?= $c['slug'] ?>)</li>
+    <?php endwhile; ?>
+</ul>
+<?php include '../includes/footer.php'; ?>
