@@ -1,0 +1,29 @@
+<?php
+include '../includes/config.php';
+include '../includes/functions.php';
+if (isLoggedIn()) { header('Location: marketplace.php'); exit; }
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
+    $stmt->bind_param("s", $_POST['email']);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+    if ($user && password_verify($_POST['password'], $user['password'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['name'] = $user['name'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['is_approved'] = $user['is_approved'];
+        header('Location: marketplace.php'); exit;
+    } else { $error = "Invalid email or password."; }
+}
+include '../includes/header.php';
+?>
+<h2>Login</h2>
+<?php if ($error) echo "<p class='error'>$error</p>"; ?>
+<form method="post">
+    Email: <input type="email" name="email" required>
+    Password: <input type="password" name="password" required>
+    <button type="submit" class="btn">Login</button>
+</form>
+<p>Admin: admin@chigtech.com / admin123</p>
+<?php include '../includes/footer.php'; ?>
