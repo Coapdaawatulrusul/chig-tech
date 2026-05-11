@@ -1,0 +1,30 @@
+<?php
+include '../includes/config.php';
+include '../includes/functions.php';
+requireAdmin();
+if (isset($_GET['delete'])) {
+    $id = (int)$_GET['delete'];
+    $conn->query("DELETE FROM courses WHERE id=$id");
+    header('Location: courses.php'); exit;
+}
+$courses = $conn->query("SELECT * FROM courses ORDER BY id DESC");
+include '../includes/header.php';
+?>
+<h2>Courses</h2>
+<a href="course_form.php" class="btn">Add Course</a>
+<table>
+    <tr><th>ID</th><th>Title</th><th>Price</th><th>Duration</th><th>Actions</th></tr>
+    <?php while ($c = $courses->fetch_assoc()): ?>
+    <tr>
+        <td><?= $c['id'] ?></td>
+        <td><?= htmlspecialchars($c['title']) ?></td>
+        <td>$<?= number_format($c['price'],2) ?></td>
+        <td><?= htmlspecialchars($c['duration']) ?></td>
+        <td>
+            <a href="course_form.php?id=<?= $c['id'] ?>" class="btn">Edit</a>
+            <a href="courses.php?delete=<?= $c['id'] ?>" class="btn" style="background:red;" onclick="return confirm('Delete?')">Delete</a>
+        </td>
+    </tr>
+    <?php endwhile; ?>
+</table>
+<?php include '../includes/footer.php'; ?>
